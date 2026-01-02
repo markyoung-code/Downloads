@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+
+body {
+      font-family:  "Lucida Console", "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 7px;
+     background-color: #0D0D0D;
+     width: 100%;  
+    }
+
+  
+  .container {
+      width: 80%;
+    }
+
+
+    .slot label {
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .slot input {
+      display: block;
+      width: 80%;
+      margin: 0px auto;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      font-size: 14px;
+      padding-top: 5px;
+      
+    }
+.slot {
+      text-align: center;
+      padding: 5px;
+      outline-style: outset;
+      outline-color: grey;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ccd1d1;
+      width: 95%;
+      border: 1px solid #73AD21;
+      
+     
+    }
+
+.slot button {
+ border: 1px solid black;
+  outline-style: outset;
+  outline-color: grey;
+  padding: 10px ;
+   cursor: pointer;
+
+   
+}
+li {
+  float: left;
+}
+p {
+  color: white; 
+}
+
+li  button:hover {
+  background-color: black;
+
+}
+.slot button:hover {
+  background-color: green; 
+}
+
+
+.dropbtn {
+      background-color: #73AD21;
+      color: white;
+      padding: 8px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    #function {
+      color: white; 
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+   
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #0D0D0D;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      
+    }
+    select {
+      background-color: #ccd1d1;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+      cursor: pointer;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    #clearall {
+      background-color: #73AD21; 
+      font-size: 16px;
+      cursor: pointer; 
+      display: block; 
+      color: white;  
+    }
+    .dropdown:hover .dropbtn {
+      
+      background-color: #3e8e41;
+    }
+    .clock {
+  float: right;
+  width: 300px;
+  border: 3px solid #73AD21;
+  padding: 10px; 
+    }
+
+    .clock #time {
+      text-align: center; 
+
+    }
+</style>      
+<div id="function"></div>
+</head>
+<body> 
+  <div class="clock" style="color: white;">
+
+     <div id="time"></div>
+  </div>
+  <div class="dropdown">
+   <button id="clearall" onclick="cearAll()">Clear All</button><br>
+    <button class="dropbtn">Options</button><br>
+    <div class="dropdown-content">
+      <a href="#" id="stationone" onclick="onStationClick(this)">Station 1</a>
+      <a href="#" id="stationtwo" onclick="onStationClick(this)">Station 2</a>
+    </div>
+  </div> &nbsp;
+
+ <div class="<container"> 
+
+ <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 20px;">
+ 
+ <div class="slot-container" onload="showMessage()"> 
+  <div class="slot" id="slotl"></div></div> &nbsp&nbsp<br> 
+
+<div class="slot-container"> 
+  <div class="slot" id="slotm"></div> </div>  &nbsp&nbsp
+
+<div class="slot-container"> 
+  <div class="slot" id="slotn"></div></div> &nbsp&nbsp
+
+<div class="slot-container"> 
+  <div class="slot" id="sloto"></div></div> &nbsp&nbsp
+
+</div>
+
+</div>
+<script>
+      function innerClock(){
+        google.script.run.withSuccessHandler(function(output){
+
+          document.getElementById("time").innerHTML = output; 
+
+        }).getTimeNow(); 
+     }
+       innerClock()
+
+
+     setInterval(function(){
+         innerClock(); 
+
+        },30000);
+
+
+
+// to the UI method 
+const totalSlots = 16;
+    const container = document.getElementById('slotl');
+   const containerm = document.getElementById('slotm');
+    const containern = document.getElementById('slotn');
+   const containero = document.getElementById('sloto');
+   
+    let = curentId = 0; 
+    // Create slots dynamically
+    for (let i = 1; i <= totalSlots; i++) {
+      const slotDiv = document.createElement('div');
+      slotDiv.classList.add('slot');
+
+      slotDiv.innerHTML = `
+        <label for="slot${i}">Slot ${i}</label><br>
+        <input id="slot${i}" placeholder="Serial Number" onchange = "goNext(${i}) " disabled /><br> 
+        <input id="fail-code${i}" placeholder="Fail Code" disabled onchange="getFailCode(${i})"/><br>
+         <button id="start${i}" onclick="runTest(${i})" disabled>Start</button>
+        <button id="submit${i}" onclick="completeTest(${i})" disabled>Complete</button>
+        <button id="clearID${i}" onclick="clearSingleCell(${i})" disabled>Clear</button><br>
+        
+        <p id="slot${i}status" style="color: red;"></p><br><br> `;
+     
+     if(i == 1 || i == 5 || i == 9 || i == 13){container.appendChild(slotDiv);  }
+     else if(i == 2 || i == 6 || i == 10 || i == 14){containerm.appendChild(slotDiv); }
+     else if(i == 3 || i == 7 || i == 11 || i == 15){containern.appendChild(slotDiv); }
+     else{containero.appendChild(slotDiv); }
+     
+     }
+
+
+     
+
+
+
+//Data calls functions below 
+
+
+const inactiveSlots = []; 
+
+var stationOne = false; 
+var stationTwo = false; 
+let activeSlotx = ""; 
+
+let slotsFilled = 0;
+let index_P = 0; 
+const MAX_SIZE = 16;   
+
+const activeSlots = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]; 
+const passedSerials = []; 
+//adds to arrayList; 
+function toObject(serial){
+
+for(var i = 0; i < 16; i++){
+  if(activeSlots[i] === null){ 
+      activeSlots[i] = serial; 
+      return true; 
+  }
+} 
+  return false; //all slots a full; 
+}
+
+function serialHasNotPassed(serial) {
+  var size = passedSerials.length; 
+  
+
+  for (var i = 0; i < size; i++) {
+    if (serial === passedSerials[i]) {
+      return false;  // Return false if the serial is found in the array
+    }
+  }
+  return true;  // Return true if the serial is not in the array
+}
+
+
+function cearAll(){
+  for(var i = 1; i <= 16; i++ ){
+     clearSingleCell(i); 
+     var x = 1 - 1; 
+     activeSlots[x] = null; 
+  }
+}
+
+function addPassedSerials(serial) {
+
+  passedSerials.push(serial);  // Adds the serial to the array
+}
+
+
+function removeFromList(serial){
+  for(var i = 0; i < 16; i++){
+    if(activeSlots[i] === serial){
+      activeSlots[i] = null; 
+      return true; //Item was removed from the list; 
+    }
+  }
+  return false; //Nothing was removed from the list; 
+}
+
+
+//Makes sure activeSlots doesn't contail a serial number before adding it. Returns false if the list contains the given serial number. 
+function doesNotContain(serial){
+  for(let i = 0; i < 16; i++){
+    if(activeSlots[i] === serial){
+      return false; 
+    }
+  }
+  return true; 
+}
+
+
+//activeate the input cells; 
+function onStationClick(element){
+
+	var id = element.id; 
+switch(id){
+	case "stationone": stationOne = true; alert("You are connected to station One"); activeSlotx = "Station 1";   
+	break; 
+	case "stationtwo": stationTwo = true; alert("You are connected to station Two"); activeSlotx = "Station 2"; 
+	break; 
+}
+
+if(stationOne || stationTwo){
+for(var i = 1; i <= MAX_SIZE; i++){document.getElementById(`slot${i}`).disabled = false; }
+
+}
+
+}
+
+function goNext(i){
+
+	var nextSlot = i+1; 
+	if(nextSlot == 17){nextSlot = 1;}
+
+	var slot = document.getElementById(`slot${nextSlot}`); 
+
+	if(slot){slot.focus()}
+	else{alert("Process error")}
+
+var startButton = document.getElementById(`start${i}`); 
+//var failCodeInput = document.getElementById(`fail-code${i}`); 
+var inputSlot = document.getElementById(`slot${i}`).value; 
+
+if(inputSlot !== ""){
+startButton.disabled = false;
+failCodeInput.disabled = false; 
+ }else {alert("Can not leave the serial field blank. Pleae try again.")}
+
+}
+
+function runTest(i){
+
+	var startButton = document.getElementById(`start${i}`); 
+	var completeButton = document.getElementById(`submit${i}`)
+	var serialInput = document.getElementById(`slot${i}`).value; 
+    
+    if(!doesNotContain(serialInput) || serialInput === "" || !validateSerial(serialInput)){
+      alert("Scan not complete")
+       
+    }else {
+    
+      if(serialHasNotPassed(serialInput) == false){
+        alert("This serial has already passed")
+        return 
+      }
+      toObject(serialInput); 
+    
+    google.script.run.downloadAdd(serialInput, activeSlotx, `Slot ${i}`);
+
+  	document.getElementById(`slot${i}`).disabled = true; 
+	var failCodeInput = document.getElementById(`fail-code${i}`).disabled = false;
+	startButton.disabled = true;
+	completeButton.disabled = false;   
+    document.getElementById(`slot${i}status`).innerHTML = "Downloading..."
+}
+}
+
+function completeTest(i){
+ var completeButton = document.getElementById(`submit${i}`); 
+var inputSlot = document.getElementById(`slot${i}`); 
+var clearButton = document.getElementById(`clearID${i}`);
+var failcodeField = document.getElementById(`fail-code${i}`);
+var serialInput = document.getElementById(`slot${i}`).value;
+var failValue = failcodeField.value; 
+var chckfailCode = checkFailCode(failValue); 
+
+if(failValue == ""){
+  alert("Fail field is blank. Please scan code and try again")
+}else {
+
+if(failcodeField !== "" && chckfailCode != null){failcodeField.disabled = true; completeButton.disabled = true; clearButton.disabled = false;}else{
+  document.getElementById(`slot${i}status`).innerHTML = "Error Occured!"
+  return; 
+}
+
+removeFromList(serialInput); 
+
+if(chckfailCode){
+  document.getElementById(`slot${i}status`).innerHTML = "Passed"
+   google.script.run.downloadComplete(serialInput, "Pass", failValue);
+   addPassedSerials(serialInput); 
+}else{document.getElementById(`slot${i}status`).innerHTML = "Failed"
+ google.script.run.downloadComplete(serialInput, "Failed", failValue)
+} //end else
+} //end else
+} //end function 
+
+// validates the size of the serial; 
+function validateSerial(serial){
+  try {
+   if(checkSerial(serial) == 12){
+    return true; 
+   }else {
+    return false; 
+   }
+  } catch(e){
+    console.log("Error at validateSerial"); 
+  }
+}
+
+//Pass through the serial number, function removes any white space; 
+function checkSerial(serial){
+ try{
+  var sLength = serial.length; 
+  var updateSerial =""; 
+  for(var i = 0; i < sLength; i++){
+     var charIndex = serial.charAt(i); 
+     if(charIndex != " "){
+      updateSerial += charIndex; 
+     }else {
+      break; 
+     }
+  }
+   
+  return updateSerial.length; //returns the size of the serial;   
+ }catch(e){
+  console.log("Error at checkSerial"); 
+ }
+}
+
+
+function clearSingleCell(i){
+
+document.getElementById(`slot${i}status`).innerHTML = "" ; 
+var failcodeField = document.getElementById(`fail-code${i}`); 
+var serialField = document.getElementById(`slot${i}`);
+var clearButton = document.getElementById(`clearID${i}`);
+var completeButton = document.getElementById(`submit${i}`);
+
+
+failcodeField.value = ""; 
+failcodeField.disabled = true; 
+
+serialField.value = ""; 
+serialField.disabled = false; 
+
+clearButton.disabled = true;  
+completeButton.disabled = true; 
+
+
+}
+
+
+
+// Checks if test past or failed. 
+function checkFailCode(code){
+
+const failCodes = ["NO DL", "NO PWR", "BT RCVY","DL RMTE", "USB FRMT", "TST PROC", "USB MEDIA", "SIG LOSS", "SC ERROR" ];
+var size = failCodes.length; 
+
+for(var i = 0; i < 9; i++){
+
+if(failCodes[i] === code){return false;
+}else if(code === "NPF"){
+  return true; 
+}else {
+  //Returns null if no conditions match; 
+}
+
+}
+
+return null 
+}
+
+
+function containsActive(serialValue){
+  try{
+
+ for(var i = 0; i < slotsFilled +1; i++){
+
+ var value = activeSlots[i]
+
+ if(serialValue == value){true;}
+
+}
+  
+  return false; 
+  } catch(e){
+    console.log("Error at method constainsActive"); 
+  }
+}
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
